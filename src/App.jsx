@@ -1,41 +1,35 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-import AdminPage from './pages/AdminPage'
-import CustomerPage from './pages/CustomerPage'
-import LandingPage from './pages/LandingPage'
-import LoginPage from './pages/LoginPage'
-import StaffPage from './pages/StaffPage'
-import SignupPage from './pages/SignupPage'
-import CheckoutPage from './components/CheckoutPage'
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import LandingArea from "./pages/LandingArea"
+import LoginPage from "./pages/LoginPage"
+import SignupPage from "./pages/SignupPage"
+import CustomerPage from "./pages/CustomerPage"
+import AdminPage from "./pages/AdminPage"
+import CheckoutWrapper from "./pages/CheckoutWrapper"
+import OrdersPage from "./components/OrdersPage"
+import StaffPage from "./pages/StaffPage"
+import AdminProduct from "./pages/AdminProduct"
+import AdminMenu from "./pages/AdminMenu"
 
-// Wrapper component for CheckoutPage to handle navigation and cart data
-function CheckoutWrapper() {
-	const navigate = useNavigate();
-	const location = useLocation();
-	const cart = location.state?.cart || [];
-
-	return (
-		<CheckoutPage 
-			cart={cart}
-			onBack={() => navigate('/customer')}
-		/>
-	);
-}
 
 function App() {
-	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<LandingPage />} />
-				<Route path="/login" element={<LoginPage />} />
-				<Route path="/signup" element={<SignupPage />} />
-				<Route path="/admin" element={<AdminPage />} />
-				<Route path="/customer" element={<CustomerPage />} />
-				<Route path="/checkout" element={<CheckoutWrapper />} />
-				<Route path="/staff" element={<StaffPage />} />
-			</Routes>
-		</BrowserRouter>
-	)
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingArea />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/addproduct" element={<AdminProduct />} />
+        <Route path="/allproducts" element={<AdminMenu />} />
+        <Route path="/customer" element={<CustomerPage /> } />
+        <Route path="/checkout" element={<CheckoutWrapper /> } />
+        <Route path="/orders" element={<OrdersPage /> } />
+        <Route path="/staff" element={<StaffPage />} />
+
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App

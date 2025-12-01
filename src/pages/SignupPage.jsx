@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserPlus, Eye, EyeOff, User, Briefcase, Shield, CheckCircle } from "lucide-react";
+import { supabase } from "../services/supabase";
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -35,11 +36,16 @@ export default function SignupPage() {
     setPasswordStrength(calculatePasswordStrength(pwd));
   };
 
+  const getPasswordStrengthText = () => {
+    const texts = ["Weak", "Fair", "Good", "Strong"];
+    const colors = ["text-red-600", "text-orange-600", "text-yellow-600", "text-green-600"];
+    return { text: texts[passwordStrength - 1] || "", color: colors[passwordStrength - 1] || "" };
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Validation
     if (!fullName || !email || !password || !confirmPassword) {
       setError("Please fill in all fields");
       return;
@@ -50,39 +56,46 @@ export default function SignupPage() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return;
-    }
-
     setLoading(true);
 
-    // Simulate API call (replace with actual registration)
-    setTimeout(() => {
-      // Mock registration - Replace with Supabase auth
-      console.log("Signup:", { fullName, email, role: selectedRole });
+    try {
+      // 1️⃣ Create user in Supabase Auth
+      const { data, error: signupError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { role: selectedRole, full_name: fullName } },
+      });
 
-      // Route based on selected role
-      const selectedRoleData = roles.find(r => r.id === selectedRole);
-      if (selectedRoleData) {
-        navigate(selectedRoleData.route);
-      }
+      if (signupError) throw signupError;
 
+      const userId = data.user?.id;
+
+      // 2️⃣ Save user profile in 'users' table (optional if you want extra info)
+      const { error: profileError } = await supabase.from("users").insert([
+        {
+          id: userId,
+          full_name: fullName,
+          role: selectedRole,
+          email: email,
+        },
+      ]);
+
+      if (profileError) throw profileError;
+
+      // 3️⃣ Redirect based on role
+      const selectedRoleData = roles.find((r) => r.id === selectedRole);
+      navigate(selectedRoleData.route);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setLoading(false);
-    }, 1500);
-  };
-
-  const getPasswordStrengthText = () => {
-    const texts = ["Weak", "Fair", "Good", "Strong"];
-    const colors = ["text-red-600", "text-orange-600", "text-yellow-600", "text-green-600"];
-    return { text: texts[passwordStrength - 1] || "", color: colors[passwordStrength - 1] || "" };
+    }
   };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-orange-50 to-white flex items-center justify-center p-6">
-      {/* CARD */}
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 border border-orange-200/40">
-        {/* HEADER */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 mx-auto mb-3 bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg animate-pulse">
             🍽️
@@ -93,7 +106,6 @@ export default function SignupPage() {
           <p className="text-gray-500 text-sm mt-1">Start your smart dining journey today</p>
         </div>
 
-        {/* FORM */}
         <form onSubmit={handleSignup} className="space-y-5">
           {/* ROLE SELECTION */}
           <div>
@@ -114,9 +126,7 @@ export default function SignupPage() {
                     size={24} 
                     className={selectedRole === role.id ? "text-orange-600" : "text-gray-400"}
                   />
-                  <span className={`text-xs font-semibold ${
-                    selectedRole === role.id ? "text-orange-600" : "text-gray-600"
-                  }`}>
+                  <span className={`text-xs font-semibold ${selectedRole === role.id ? "text-orange-600" : "text-gray-600"}`}>
                     {role.label}
                   </span>
                   <span className="text-[10px] text-gray-400">{role.desc}</span>
@@ -125,11 +135,8 @@ export default function SignupPage() {
             </div>
           </div>
 
-          {/* ERROR MESSAGE */}
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
-              {error}
-            </div>
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">{error}</div>
           )}
 
           {/* FULL NAME */}
@@ -177,7 +184,6 @@ export default function SignupPage() {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
 
-            {/* Password Strength Indicator */}
             {password && (
               <div className="mt-2">
                 <div className="flex gap-1">
@@ -224,7 +230,6 @@ export default function SignupPage() {
               {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
 
-            {/* Match Indicator */}
             {confirmPassword && password === confirmPassword && (
               <div className="flex items-center gap-1 mt-2 text-green-600 text-sm">
                 <CheckCircle size={16} />
@@ -233,7 +238,6 @@ export default function SignupPage() {
             )}
           </div>
 
-          {/* SIGNUP BUTTON */}
           <button
             type="submit"
             disabled={loading}
@@ -251,10 +255,8 @@ export default function SignupPage() {
             )}
           </button>
 
-          {/* DIVIDER */}
           <div className="text-center text-sm text-gray-500">Already have an account?</div>
 
-          {/* LOGIN */}
           <Link
             to="/login"
             className="block w-full py-3 border-2 border-orange-500 text-orange-600 rounded-xl text-center font-semibold hover:bg-orange-50 transition transform hover:scale-105"

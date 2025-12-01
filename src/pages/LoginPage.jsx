@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LogIn, Eye, EyeOff, User, Briefcase, Shield } from "lucide-react";
+import { supabase } from "../services/supabase";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function LoginPage() {
   const roles = [
     { id: "customer", label: "Customer", icon: User, route: "/customer" },
     { id: "staff", label: "Staff", icon: Briefcase, route: "/staff" },
-    { id: "admin", label: "Admin", icon: Shield, route: "/admin" }
+    { id: "admin", label: "Admin", icon: Shield, route: "/admin" },
   ];
 
   const handleLogin = async (e) => {
@@ -22,31 +23,41 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    // Validation
     if (!email || !password) {
       setError("Please fill in all fields");
       setLoading(false);
       return;
     }
 
-    // Simulate API call (replace with actual authentication)
-    setTimeout(() => {
-      // Mock authentication - Replace with Supabase auth
-      console.log("Login:", { email, role: selectedRole });
+    try {
+      // ✅ Sign in with Supabase Auth
+      const { data, error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-      // Route based on selected role
-      const selectedRoleData = roles.find(r => r.id === selectedRole);
-      if (selectedRoleData) {
-        navigate(selectedRoleData.route);
+      if (loginError) throw loginError;
+      if (!data.user) throw new Error("User not found");
+
+      // ✅ Check user's role stored in user_metadata
+      const userRole = data.user.user_metadata?.role;
+
+      if (userRole !== selectedRole) {
+        throw new Error(`Selected role does not match your account role: ${userRole}`);
       }
 
+      // ✅ Navigate based on role
+      const route = roles.find((r) => r.id === userRole)?.route || "/";
+      navigate(route);
+    } catch (err) {
+      setError(err.message || "Login failed");
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-orange-50 to-white flex items-center justify-center p-6">
-      {/* CARD */}
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 border border-orange-200/40">
         {/* HEADER */}
         <div className="text-center mb-8">
@@ -56,7 +67,9 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold bg-linear-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
             Welcome Back
           </h1>
-          <p className="text-gray-500 text-sm mt-1">Login to continue your smart dining experience</p>
+          <p className="text-gray-500 text-sm mt-1">
+            Login to continue your smart dining experience
+          </p>
         </div>
 
         {/* FORM */}
@@ -76,13 +89,15 @@ export default function LoginPage() {
                       : "border-gray-200 hover:border-orange-300"
                   }`}
                 >
-                  <role.icon 
-                    size={24} 
+                  <role.icon
+                    size={24}
                     className={selectedRole === role.id ? "text-orange-600" : "text-gray-400"}
                   />
-                  <span className={`text-xs font-semibold ${
-                    selectedRole === role.id ? "text-orange-600" : "text-gray-600"
-                  }`}>
+                  <span
+                    className={`text-xs font-semibold ${
+                      selectedRole === role.id ? "text-orange-600" : "text-gray-600"
+                    }`}
+                  >
                     {role.label}
                   </span>
                 </button>
@@ -143,7 +158,7 @@ export default function LoginPage() {
               </>
             ) : (
               <>
-                <LogIn size={20} /> Login as {roles.find(r => r.id === selectedRole)?.label}
+                <LogIn size={20} /> Login as {roles.find((r) => r.id === selectedRole)?.label}
               </>
             )}
           </button>
@@ -159,16 +174,6 @@ export default function LoginPage() {
             Create an Account
           </Link>
         </form>
-
-        {/* DEMO CREDENTIALS */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-          <p className="text-xs text-gray-500 text-center font-semibold mb-2">Demo Credentials</p>
-          <div className="text-xs text-gray-600 space-y-1">
-            <p><span className="font-semibold">Email:</span> demo@restaurant.com</p>
-            <p><span className="font-semibold">Password:</span> demo123</p>
-            <p className="text-orange-600 font-semibold mt-2">Select any role above</p>
-          </div>
-        </div>
       </div>
     </div>
   );
