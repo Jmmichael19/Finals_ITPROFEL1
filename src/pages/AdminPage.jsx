@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Users, BarChart3, MessageCircle, ClipboardList, Settings, Menu, ShoppingCart, Clock, CheckCircle, X, LogOut, Box } from "lucide-react";
-import { supabase } from "../services/supabase";
+import supabase  from "../services/supabase";
 import { NavLink, useNavigate } from "react-router-dom";
 
 export default function AdminPage() {
@@ -91,14 +91,14 @@ export default function AdminPage() {
     if (!showOrdersModal) return null;
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-40 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-3xl sm:max-w-4xl w-full max-h-[80vh] overflow-hidden">
           {/* Header */}
-          <div className="p-6 border-b flex items-center justify-between bg-orange-50">
+          <div className="p-4 sm:p-6 border-b flex items-center justify-between bg-orange-600 rounded-t-2xl">
             <h2 className="text-2xl font-bold text-gray-900">All Orders</h2>
             <button
               onClick={() => setShowOrdersModal(false)}
-              className="p-2 hover:bg-orange-100 rounded-lg transition"
+              className="p-2 hover:bg-gray-100 rounded-lg transition"
             >
               <X size={24} />
             </button>
@@ -197,11 +197,11 @@ export default function AdminPage() {
       <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">
+            <div className="w-12 h-12 bg-linear-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">
               🍽️
             </div>
             <div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-linear-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
                 RestaurantAI
               </span>
               <p className="text-xs text-gray-500">Admin Dashboard</p>
@@ -218,35 +218,38 @@ export default function AdminPage() {
         <div className="mb-10 flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-gray-900">
-              Welcome, <span className="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">Admin</span>
+              Welcome, <span className="bg-linear-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">Admin</span>
             </h1>
             <p className="text-gray-600 text-lg mt-2">
               Full Access • Manage Users • View Analytics • Configure Menu • Monitor Chatbot Logs • Generate Reports
             </p>
           </div>
-          <NavLink to="/login">
-            <LogOut size={28} className="text-gray-600 hover:text-gray-800 transition" />
-          </NavLink>
+          <button
+            onClick={() => navigate("/login")}
+            className="mb-6 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
+          >
+          Log out
+          </button>
         </div>
 
         {/* Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-2xl shadow-lg">
+          <div className="bg-linear-to-br from-orange-500 to-orange-600 text-white p-6 rounded-2xl shadow-lg">
             <ShoppingCart size={32} className="mb-2" />
             <p className="text-orange-100 text-sm">Total Orders</p>
             <p className="text-4xl font-bold">{totalOrders}</p>
           </div>
-          <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-2xl shadow-lg">
+          <div className="bg-linear-to-br from-green-500 to-green-600 text-white p-6 rounded-2xl shadow-lg">
             <CheckCircle size={32} className="mb-2" />
             <p className="text-green-100 text-sm">Completed Orders</p>
             <p className="text-4xl font-bold">{completedOrders}</p>
           </div>
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg">
+          <div className="bg-linear-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg">
             <BarChart3 size={32} className="mb-2" />
             <p className="text-blue-100 text-sm">Total Revenue</p>
             <p className="text-4xl font-bold">₱{parseFloat(totalRevenue).toLocaleString()}</p>
           </div>
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg">
+          <div className="bg-linear-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg">
             <Box size={32} className="mb-2" />
             <p className="text-blue-100 text-sm">Total Stocks</p>
             <p className="text-4xl font-bold">{totalStocks}</p>
@@ -257,19 +260,19 @@ export default function AdminPage() {
         <div className="mb-10 gap-2 flex flex-col md:flex-row">
           <button
             onClick={() => setShowOrdersModal(true)}
-            className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-bold rounded-xl hover:shadow-xl transition transform hover:scale-105 flex items-center gap-2 justify-center"
+            className="w-full md:w-auto px-8 py-4 bg-linear-to-r from-orange-600 to-orange-500 text-white font-bold rounded-xl hover:shadow-xl transition transform hover:scale-105 flex items-center gap-2 justify-center"
           >
             <ShoppingCart size={24} /> View All Orders
           </button>
           <button
             onClick={() => navigate("/addproduct")}
-            className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-bold rounded-xl hover:shadow-xl transition transform hover:scale-105 flex items-center gap-2 justify-center"
+            className="w-full md:w-auto px-8 py-4 bg-linear-to-r from-orange-600 to-orange-500 text-white font-bold rounded-xl hover:shadow-xl transition transform hover:scale-105 flex items-center gap-2 justify-center"
           >
             Add Product
           </button>
           <button
             onClick={() => navigate("/allproducts")}
-            className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-bold rounded-xl hover:shadow-xl transition transform hover:scale-105 flex items-center gap-2 justify-center"
+            className="w-full md:w-auto px-8 py-4 bg-linear-to-r from-orange-600 to-orange-500 text-white font-bold rounded-xl hover:shadow-xl transition transform hover:scale-105 flex items-center gap-2 justify-center"
           >
             All Products
           </button>
