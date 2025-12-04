@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LogIn, Eye, EyeOff, User, Briefcase, Shield } from "lucide-react";
-import { supabase } from "../services/supabase";
+import  supabase  from "../services/supabase";
 
 export default function LoginPage() {
   const navigate = useNavigate();
