@@ -3,7 +3,8 @@ import {
   ShoppingCart, Bot, Plus, Minus, Trash2, LogOut, Box 
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { supabase } from "../services/supabase";
+import supabase from "../services/supabase";
+import Chatbot from "../components/Chatbot";
 
 export default function CustomerPage() {
   const navigate = useNavigate();
@@ -108,24 +109,29 @@ export default function CustomerPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* NAVBAR */}
-      <nav className="fixed top-0 w-full bg-white shadow-md z-50">
+      <nav className="fixed top-0 w-full bg-white shadow-md z-40 pointer-events-auto">
         <div className="container mx-auto px-4 lg:px-8 flex items-center justify-between h-20">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">🍽️</div>
+            <div className="w-12 h-12 bg-linear-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">🍽️</div>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">RestaurantAI</h1>
               <p className="text-xs text-gray-500">Smart Dining Experience</p>
             </div>
-            <NavLink to="/login"><LogOut /></NavLink>
           </div>
 
-          <div className="hidden md:flex items-center gap-4">
-            <button onClick={() => navigate("/orders")} className="px-5 py-2 border-2 border-orange-500 text-orange-600 rounded-lg flex items-center gap-2 font-semibold"><Box size={20} /> Orders</button>
-            <button onClick={() => setChatOpen(true)} className="px-5 py-2 border-2 border-orange-500 text-orange-600 rounded-lg flex items-center gap-2 font-semibold"><Bot size={20} /> AI Assistant</button>
-            <button onClick={() => setShowReceipt(true)} className="relative px-5 py-2 bg-orange-600 text-white rounded-lg flex items-center gap-2 font-semibold">
+          <div className="flex items-center gap-4">
+            <button onClick={() => navigate("/orders")} className="px-5 py-2 border-2 border-orange-500 text-orange-600 rounded-lg flex items-center gap-2 font-semibold hover:bg-orange-300 transition pointer-events-auto"><Box size={20} /> Orders</button>
+            <button onClick={() => setChatOpen(true)} className="px-5 py-2 border-2 border-orange-500 text-orange-600 rounded-lg flex items-center gap-2 font-semibold hover:bg-orange-300 transition pointer-events-auto"><Bot size={20} /> AI Assistant</button>
+            <button onClick={() => setShowReceipt(true)} className="relative px-5 py-2 bg-orange-600 text-white rounded-lg flex items-center gap-2 font-semibold hover:bg-orange-700 transition pointer-events-auto">
               <ShoppingCart size={20} /> Cart
               {cartItemCount > 0 && <span className="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center text-xs font-bold rounded-full bg-red-500 text-white">{cartItemCount}</span>}
             </button>
+            <button
+            onClick={() => navigate("/login")}
+            className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition pointer-events-auto"
+          >
+          Log out
+          </button>
           </div>
         </div>
       </nav>
@@ -170,7 +176,7 @@ export default function CustomerPage() {
             </div>
           </div>
 
-          {/* CART */}
+          {/* CART SIDEBAR */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-md p-6 sticky top-24">
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><ShoppingCart size={24} /> Your Order</h2>
@@ -201,37 +207,67 @@ export default function CustomerPage() {
                 )}
               </div>
 
-              {/* RECEIPT SUMMARY */}
-              {cart.length > 0 && cart.map(item => (
-                <div key={`receipt-${item.id}`} className="flex justify-between py-2">
-                  <div>
-                    <p className="font-semibold">{item.name}</p>
-                    <p className="text-sm text-gray-500">Qty: {item.quantity} × ₱{item.price}</p>
-                  </div>
-                  <p className="font-semibold">₱{item.price * item.quantity}</p>
-                </div>
-              ))}
-               {cart.length > 0 && (
-                  <>
-                    <div className="border-t pt-4 mb-4">
-                      <div className="flex justify-between text-lg font-bold">
-                        <span>Total:</span>
-                        <span className="text-orange-600">₱{cartTotal}</span>
-                      </div>
+              {cart.length > 0 && (
+                <>
+                  <div className="border-t pt-4 mb-4">
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total:</span>
+                      <span className="text-orange-600">₱{cartTotal}</span>
                     </div>
+                  </div>
 
-                     <button 
-                      onClick={() => navigate("/checkout", { state: { cart } })}  // ✅ FIXED ROUTING
-                      className="w-full py-4 bg-linear-to-r from-orange-600 to-orange-500 text-white font-bold rounded-xl hover:shadow-xl transition">
-                      Proceed to Checkout
-                    </button>
-                  </>
-                )}
+                  <button 
+                    onClick={() => navigate("/checkout", { state: { cart } })}
+                    className="w-full py-4 bg-orange-600 to-orange-500 text-white font-bold rounded-xl hover:bg-orange-700 transition">
+                    Proceed to Checkout
+                  </button>
+                </>
+              )}
             </div>
-           
-          </div>
+                     </div>
         </div>
       </section>
+
+      {/* CHAT MODAL */}
+     <Chatbot isOpen={chatOpen} onClose={() => setChatOpen(false)} menuItems={menuItems} />
+
+      {/* RECEIPT MODAL */}
+      {showReceipt && (
+        <div className="fixed inset-0  bg-opacity-50 z-50 flex items-center justify-center pointer-events-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full sm:w-96 max-h-96 overflow-y-auto p-6 pointer-events-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-800">Your Cart</h3>
+              <button onClick={() => setShowReceipt(false)} className="text-gray-600 hover:text-gray-800 text-2xl">×</button>
+            </div>
+            {cart.length === 0 ? (
+              <p className="text-gray-600 text-center">Your cart is empty</p>
+            ) : (
+              <>
+                {cart.map(item => (
+                  <div key={`modal-cart-${item.id}`} className="flex justify-between py-2 border-b">
+                    <div>
+                      <p className="font-semibold">{item.name}</p>
+                      <p className="text-sm text-gray-500">Qty: {item.quantity} × ₱{item.price}</p>
+                    </div>
+                    <p className="font-semibold">₱{item.price * item.quantity}</p>
+                  </div>
+                ))}
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex justify-between text-lg font-bold mb-4">
+                    <span>Total:</span>
+                    <span className="text-orange-600">₱{cartTotal}</span>
+                  </div>
+                  <button 
+                    onClick={() => { handleCheckout(); setShowReceipt(false); }}
+                    className="w-full py-3 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition">
+                    Checkout
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
