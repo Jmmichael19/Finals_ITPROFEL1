@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Pencil, Trash2, Search, Package, DollarSign, Tag, PhilippinePeso, PhilippinePesoIcon } from 'lucide-react';
-import { supabase } from '../services/supabase'; // Make sure this points to your Supabase client
+import  supabase  from '../services/supabase'; // Make sure this points to your Supabase client
 import { useNavigate } from 'react-router-dom';
 
 function AdminMenu() {
@@ -92,7 +92,7 @@ function AdminMenu() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
