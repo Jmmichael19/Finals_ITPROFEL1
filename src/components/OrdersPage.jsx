@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../services/supabase";
+import  supabase  from "../services/supabase";
 import { Clock, Receipt, Utensils, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
