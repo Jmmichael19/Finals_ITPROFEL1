@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Clock, CheckCircle, Menu } from "lucide-react";
-import { supabase } from "../services/supabase";
+import  supabase  from "../services/supabase";
 import { useNavigate } from "react-router-dom";
 
 export default function StaffPage() {
@@ -90,11 +90,11 @@ export default function StaffPage() {
       <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">
+            <div className="w-12 h-12 bg-linear-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">
               🍽️
             </div>
             <div>
-              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-orange-500">
+              <span className="text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-orange-600 to-orange-500">
                 RestaurantAI
               </span>
               <p className="text-xs text-gray-500">Staff Dashboard</p>
@@ -110,14 +110,14 @@ export default function StaffPage() {
       <div className="pt-28 container mx-auto px-6">
         <div className="mb-10">
           <h1 className="text-4xl font-bold text-gray-900">
-            Welcome, <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-orange-500">Staff</span>
+            Welcome, <span className="bg-clip-text text-transparent bg-linear-to-r from-orange-600 to-orange-500">Staff</span>
           </h1>
           <button
             onClick={() => navigate("/login")}
             className="mb-6 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
           >
             ← Log out
-          </button>
+          </button> 
           <p className="text-gray-600 text-lg mt-2">
             Manage incoming orders • Update order status • View summaries
           </p>
@@ -125,19 +125,19 @@ export default function StaffPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg">
+          <div className="bg-linear-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg">
             <ShoppingCart size={32} className="mb-2" />
             <p className="text-blue-100 text-sm">Total Orders</p>
             <p className="text-4xl font-bold">{totalOrders}</p>
           </div>
 
-          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white p-6 rounded-2xl shadow-lg">
+          <div className="bg-linear-to-br from-yellow-500 to-yellow-600 text-white p-6 rounded-2xl shadow-lg">
             <Clock size={32} className="mb-2" />
             <p className="text-yellow-100 text-sm">Pending Orders</p>
             <p className="text-4xl font-bold">{pending}</p>
           </div>
 
-          <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-2xl shadow-lg">
+          <div className="bg-linear-to-br from-green-500 to-green-600 text-white p-6 rounded-2xl shadow-lg">
             <CheckCircle size={32} className="mb-2" />
             <p className="text-green-100 text-sm">Completed</p>
             <p className="text-4xl font-bold">{completed}</p>
