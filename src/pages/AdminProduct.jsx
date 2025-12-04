@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, X, Plus } from 'lucide-react';
-import { supabase } from '../services/supabase';
+import  supabase  from '../services/supabase';
 import { useNavigate } from 'react-router-dom';
 
 function AdminProduct() {
@@ -112,18 +112,18 @@ function AdminProduct() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
+        <button
+          onClick={() => navigate("/admin")}
+          className="mb-6 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition whitespace-nowrap"
+          >
+          ← Back
+        </button>
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">Add New Product</h1>
           <p className="text-slate-600">Fill in the details to add a product to your inventory</p>
-          <button
-            onClick={() => navigate("/admin")}
-            className="mb-6 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
-            >
-            ← Back to Admin Page
-        </button>
         </div>
 
         {/* Form Card */}
@@ -281,13 +281,13 @@ function AdminProduct() {
                 });
                 setPreviewImages([]);
               }}
-              className="px-6 py-3 border border-slate-300 text-slate-700 font-medium rounded-xl hover:bg-white transition-colors"
+              className="px-6 py-3 border border-slate-300 text-slate-700 font-medium rounded-xl hover:orange-500 transition-all"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
+              className="px-6 py-3 bg-linear-to-r from-orange-600 to-orange-700 text-white font-medium rounded-xl hover:from-orange-700 hover:to-orange-800 transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
             >
               <Plus size={20} />
               Add Product
